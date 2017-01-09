@@ -19,9 +19,9 @@ module Sendbird
 
     PUBLIC_METHODS.each do |method|
       define_method("#{method}_http_basic") do |path: , params: nil , body: nil|
-        fail HttpBasicMissing.new(http_basic_message) if sendbird_user.nil? || sendbird_password.nil?
+        # fail HttpBasicMissing.new(http_basic_message) if sendbird_user.nil? || sendbird_password.nil?
         response = http_basic_request(method: method, path: path, params: params, body: body)
-        Response.new(response.status, response.body)
+        Response.new(response.status, response.fbody)
       end
     end
 
@@ -72,7 +72,7 @@ module Sendbird
       @http_basic_conn ||= Faraday.new(url: Sendbird::Configuration::SENDBIRD_ENDPOINT) do |c|
                   c.request  :url_encoded
                   c.adapter  Faraday.default_adapter
-                  c.basic_auth(sendbird_user, sendbird_password)
+                  # c.basic_auth(sendbird_user, sendbird_password)
                 end
     end
 
@@ -80,9 +80,9 @@ module Sendbird
       Sendbird.user
     end
 
-    def sendbird_password
-      Sendbird.password
-    end
+    # def sendbird_password
+    #   Sendbird.password
+    # end
 
     def api_token_request(method:, path:, params:, body:)
       conn.send(method) do |req|
